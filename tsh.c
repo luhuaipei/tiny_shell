@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <string.h>
-
+#include <stdio.h>
 /************Private include**********************************************/
 #include "tsh.h"
 #include "io.h"
@@ -54,7 +54,7 @@
 #define BUFSIZE 80
 
 /************Global Variables*********************************************/
-
+int fgpid=-1;
 /************Function Prototypes******************************************/
 /* handles SIGINT and SIGSTOP signals */	
 static void sig_handler(int);
@@ -71,21 +71,23 @@ int main (int argc, char *argv[])
   /* shell initialization */
   if (signal(SIGINT, sig_handler) == SIG_ERR) PrintPError("SIGINT");
   if (signal(SIGTSTP, sig_handler) == SIG_ERR) PrintPError("SIGTSTP");
-
   while (!forceExit) /* repeat forever */
   {
     /* read command line */
-    getCommandLine(&cmdLine, BUFSIZE);
-
-    if(strcmp(cmdLine, "exit") == 0)
+ //   printf("%%: ");
+    int ret = getCommandLine(&cmdLine, BUFSIZE);
+//    printf("*****************************%s\n",cmdLine);
+    if (ret==0){ printf("\n");  }
+    if(strcmp(cmdLine,"exit") == 0 ||  ret==0)
     {
       forceExit=TRUE;
       continue;
     }
-
     /* checks the status of background jobs */
+//    if()
+//    printf("********before CheckJobs************\n");
     CheckJobs();
-
+//    printf("********before Interpret************\n");
     /* interpret command and line
      * includes executing of commands */
     Interpret(cmdLine);
@@ -99,5 +101,25 @@ int main (int argc, char *argv[])
 
 static void sig_handler(int signo)
 {
+  if(signo == SIGINT){
+    if (fgpid!=-1){
+      kill(-fgpid,SIGINT);
+      fgpid=-1;
+    //  printf("\n");
+      fflush(stdout);
+    } 
+    //fflush(stdout);
+  } 
+  if(signo == SIGTSTP){
+ //   printf("SIGTSTP RECEIVED");
+    if(fgpid!=-1){
+      kill(-fgpid,SIGTSTP);
+      fgpid=-1;
+
+      //add the pid to background
+      
+    }
+
+  }
 }
 

@@ -1,0 +1,39 @@
+.TH tsh 1 "OCT 2015" Linux "User Manuals"
+.SH NAME
+tsh \- tiny shell
+.SH SYNOPSIS
+.B ./tsh
+.SH DESCRIPTION
+.B tsh
+This tiny shell is a mocking shell for running basic command lines.
+
+
+
+.SH OPTIONS
+.IP jobs
+Control all the background job flows.
+.IP fg [pid]
+Tell a job to continue and bring the backgrounded job to the foreground. It takes a job ID number as an argument.
+.IP bg [pid]
+Send SIGCONT to a backgrounded job, but should not give it the foreground (i.e., the user should immediately be able to issue further commands). It takes a job ID number as an argument that works the same way as fg. 
+.IP exit
+Exit this tiny shell.
+.I tsh.c
+.RS
+Listen to command line input.
+.RE
+.I interpreter.c
+.RS
+Interpret commands.
+.RE
+.I runtime.c
+.RS
+Control jobs and execute commands.
+.RE
+.SH BUGS
+The command name should have been chosen more carefully
+to reflect its purpose.
+.SH AUTHOR
+Huaipei Lu<hlv624> Yuewei Wang<ywb017>
+
+

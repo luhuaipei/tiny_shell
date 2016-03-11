@@ -90,14 +90,24 @@ bool IsReading()
   return isReading;
 }
 
-void getCommandLine(char** buf, int size)
+int getCommandLine(char** buf, int size)
 {
   char ch;
   size_t used=0;
   char* cmd = *buf;
+ // printf("%s\n", *buf);
+ // printf("In getCommandLine\n");
   cmd[0] = '\0';
-
   isReading = TRUE;
+  ch=getc(stdin);
+  if (ch==EOF)
+  {
+    isReading=FALSE;
+    return 0;
+  }
+  cmd[used] = ch;
+  used++;
+  cmd[used]='\0';
   while (((ch = getc(stdin)) != EOF) &&
       (ch != '\n'))
   {
@@ -111,5 +121,7 @@ void getCommandLine(char** buf, int size)
     cmd[used] = '\0';
   }
   isReading = FALSE;
+//  printf("%s\n", cmd);
+  return 1;
 }
 
